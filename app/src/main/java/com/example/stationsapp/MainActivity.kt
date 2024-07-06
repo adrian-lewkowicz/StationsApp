@@ -1,10 +1,15 @@
 package com.example.stationsapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.stationsapp.remote.retrofit.RetrofitInstance
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,5 +21,16 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        RetrofitInstance.api.getStations().enqueue(object : Callback<StationResponse>{
+            override fun onResponse(p0: Call<StationResponse>, p1: Response<StationResponse>) {
+                Log.d("Test Koleo", p1.code().toString())
+                Log.d("Test Koleo", p1.body().toString())
+            }
+
+            override fun onFailure(p0: Call<StationResponse>, p1: Throwable) {
+                Log.e("Test Koleo", p1.toString())
+            }
+        })
     }
 }

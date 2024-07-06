@@ -1,5 +1,3 @@
 package com.example.stationsapp
 
-class StationResponse : ArrayList<StationItem>(){
-    
-}
+class StationResponse : ArrayList<StationItem>()

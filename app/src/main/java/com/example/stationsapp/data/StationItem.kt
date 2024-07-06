@@ -1,6 +1,6 @@
 package com.example.stationsapp
 
-data class StationResponseItem(
+data class StationItem(
     val city: String,
     val country: String,
     val has_announcements: Boolean,

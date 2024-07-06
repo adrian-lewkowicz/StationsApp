@@ -1,3 +1,3 @@
 package com.example.stationsapp
 
-class StationKeywords : ArrayList<StationKeywordsItem>()
+class StationKeywordsResponse : ArrayList<StationKeywordsItem>()
