@@ -1,14 +1,14 @@
 package com.example.stationsapp.remote
 
-import com.example.stationsapp.StationKeywordsResponse
-import com.example.stationsapp.StationResponse
+import com.example.stationsapp.StationItem
+import com.example.stationsapp.StationKeywordsItem
 import retrofit2.Call
 import retrofit2.http.GET
 
 interface KoleoApiService {
     @GET("stations")
-    fun getStations(): Call<StationResponse>
+    fun getStations(): Call<List<StationItem>>
 
     @GET("station_keywords")
-    fun getKeywordsToStations(): Call<StationKeywordsResponse>
+    fun getKeywordsToStations(): Call<List<StationKeywordsItem>>
 }

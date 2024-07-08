@@ -29,13 +29,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        apiService.getStations().enqueue(object : Callback<StationResponse>{
-            override fun onResponse(p0: Call<StationResponse>, p1: Response<StationResponse>) {
+        apiService.getStations().enqueue(object : Callback<List<StationItem>>{
+            override fun onResponse(p0: Call<List<StationItem>>, p1: Response<List<StationItem>>) {
                 Log.d("Test Koleo", p1.code().toString())
                 Log.d("Test Koleo", p1.body().toString())
             }
 
-            override fun onFailure(p0: Call<StationResponse>, p1: Throwable) {
+            override fun onFailure(p0: Call<List<StationItem>>, p1: Throwable) {
                 Log.e("Test Koleo", p1.toString())
             }
         })
