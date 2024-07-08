@@ -6,14 +6,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.stationsapp.remote.retrofit.RetrofitInstance
+import com.example.stationsapp.remote.KoleoApiService
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var apiService: KoleoApiService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        RetrofitInstance.api.getStations().enqueue(object : Callback<StationResponse>{
+        apiService.getStations().enqueue(object : Callback<StationResponse>{
             override fun onResponse(p0: Call<StationResponse>, p1: Response<StationResponse>) {
                 Log.d("Test Koleo", p1.code().toString())
                 Log.d("Test Koleo", p1.body().toString())
