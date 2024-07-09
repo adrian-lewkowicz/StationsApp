@@ -1,7 +1,9 @@
 package com.example.stationsapp.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.example.stationsapp.R
 import com.example.stationsapp.StationItem
 import com.example.stationsapp.StationKeywordsItem
 import com.example.stationsapp.Utils
@@ -11,18 +13,24 @@ import com.example.stationsapp.database.entities.StationEntity
 import com.example.stationsapp.database.entities.StationKeywordsEntity
 import com.example.stationsapp.database.entities.toEntity
 import com.example.stationsapp.remote.KoleoApiService
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import javax.inject.Inject
 
-class StationRepository @Inject constructor(private val stationDao: StationDao,
-                                            private val keywordsDao: KeywordsDao,
-                                            private val koleoApiService: KoleoApiService) {
+class StationRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val stationDao: StationDao,
+    private val keywordsDao: KeywordsDao,
+    private val koleoApiService: KoleoApiService) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
@@ -33,7 +41,7 @@ class StationRepository @Inject constructor(private val stationDao: StationDao,
                     updateStations()
                 }
             }else{
-                loadInitialStations()
+                loadInitialStations(context)
             }
         }
         scope.launch {
@@ -43,7 +51,7 @@ class StationRepository @Inject constructor(private val stationDao: StationDao,
                     updateKeywords()
                 }
             }else{
-                loadInitialKeywords()
+                loadInitialKeywords(context)
             }
         }
     }
@@ -73,8 +81,13 @@ class StationRepository @Inject constructor(private val stationDao: StationDao,
         })
     }
 
-    private suspend fun loadInitialStations(){
-        ///todo loading initial data
+    private suspend fun loadInitialStations(context: Context){
+        val resources = context.resources
+        val bufferedReader = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.station_response)))
+        var jsonString = bufferedReader.use { it.readText() }
+        val type = object : TypeToken<List<StationItem>>() {}.type
+        var listItem :List<StationItem> =  Gson().fromJson(jsonString, type)
+        stationDao.insertAll(listItem.map { it.toEntity() })
     }
 
     private fun updateKeywords(){
@@ -94,7 +107,12 @@ class StationRepository @Inject constructor(private val stationDao: StationDao,
         })
     }
 
-    private suspend fun loadInitialKeywords(){
-        ///todo loading initial data
+    private suspend fun loadInitialKeywords(context: Context){
+        val resources = context.resources
+        val bufferedReader = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.station_keywords_response)))
+        var jsonString = bufferedReader.use { it.readText() }
+        val type = object : TypeToken<List<StationKeywordsItem>>() {}.type
+        var listItem :List<StationKeywordsItem> =  Gson().fromJson(jsonString, type)
+        keywordsDao.insertAll(listItem.map { it.toEntity() })
     }
 }
