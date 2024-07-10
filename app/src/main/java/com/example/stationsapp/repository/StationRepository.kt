@@ -35,19 +35,17 @@ class StationRepository @Inject constructor(
 
     init {
         scope.launch {
-            val entity = stationDao.getOldestStation()
-            if(entity != null){
-                if(Utils.checkIfIsCanBeUpdated(entity.date)){
+            val stationEntity = stationDao.getOldestStation()
+            if(stationEntity != null){
+                if(Utils.checkIfIsCanBeUpdated(stationEntity.date)){
                     updateStations()
                 }
             }else{
                 loadInitialStations(context)
             }
-        }
-        scope.launch {
-            val entity = keywordsDao.getOldestKeyword()
-            if(entity != null){
-                if(Utils.checkIfIsCanBeUpdated(entity.date)){
+            val keywordEntity = keywordsDao.getOldestKeyword()
+            if(keywordEntity != null){
+                if(Utils.checkIfIsCanBeUpdated(keywordEntity.date)){
                     updateKeywords()
                 }
             }else{
@@ -56,8 +54,12 @@ class StationRepository @Inject constructor(
         }
     }
 
-    fun getKeywords():LiveData<List<StationKeywordsEntity>>{
+    suspend fun getKeywords():List<StationKeywordsEntity>{
         return keywordsDao.getAllKeywords()
+    }
+
+    suspend fun searchStation(queryName: String): List<StationKeywordsEntity> {
+        return keywordsDao.searchKeywords(queryName)
     }
 
     suspend fun getStation(stationId: Int): StationEntity{

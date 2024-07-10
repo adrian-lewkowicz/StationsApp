@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StationsApp</string>
+    <string name="click_to_select_station">Kliknij aby wybrać stację</string>
 </resources>

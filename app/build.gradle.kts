@@ -35,6 +35,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.guava:guava:31.0.1-android")
+        }
+    }
 }
 
 dependencies {
@@ -50,6 +55,10 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.hilt.compiler.androidx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -10,7 +10,7 @@ data class StationItem(
     val is_group: Boolean,
     val is_nearby_station_enabled: Boolean,
     val latitude: Double,
-    val localised_name: String,
+    val localised_name: String?,
     val longitude: Double,
     val name: String,
     val name_slug: String,

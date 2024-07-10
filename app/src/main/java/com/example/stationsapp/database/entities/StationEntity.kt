@@ -18,7 +18,7 @@ data class StationEntity(
     @ColumnInfo(name = "is_group") val isGroup: Boolean,
     @ColumnInfo(name = "is_nearby_station_enabled") val isNearbyStationEnabled: Boolean,
     @ColumnInfo(name = "latitude") val latitude: Double,
-    @ColumnInfo(name = "localised_name") val localisedName: String,
+    @ColumnInfo(name = "localised_name") val localisedName: String?,
     @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "name_slug") val nameSlug: String,
