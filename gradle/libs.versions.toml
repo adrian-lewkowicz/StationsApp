@@ -14,6 +14,7 @@ room  = "2.6.1"
 hilt = "2.51.1"
 lifecycle = "2.8.3"
 hilt_lifecycle_viewmodel = "1.0.0-alpha03"
+osmdroid = "6.1.18"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt_lifecycle_viewmodel" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+osmdroid-android = {group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
