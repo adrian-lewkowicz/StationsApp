@@ -34,6 +34,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
     configurations.all {
         resolutionStrategy {
@@ -66,6 +67,9 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+    arguments {
+        arg("room.schemaLocationEnabled", "false")
+    }
 }
 
 hilt {

@@ -5,8 +5,7 @@ import java.util.Date
 
 object Utils {
 
-    fun checkIfIsCanBeUpdated(date :Date): Boolean {
-        ///Todo setup refresh period from config
+    fun checkIfIsCanBeUpdated(date :Date?): Boolean {
         if (date != null) {
             val currentTime = Calendar.getInstance().time
             val diff = currentTime.time - date.time
