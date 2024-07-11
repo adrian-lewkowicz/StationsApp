@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.stationsapp.StationKeywordsItem
+import com.example.stationsapp.Utils
 import java.util.Date
 
 @Entity(tableName = "station_keywords",
@@ -19,14 +20,16 @@ data class StationKeywordsEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "keyword") val keyword: String,
     @ColumnInfo(name = "station_id", index = true) val stationId: Int,
-    @ColumnInfo(name = "date") var date: Date
+    @ColumnInfo(name = "date") var date: Date,
+    @ColumnInfo(name = "clean_keyword") val cleanKeyword: String
 )
     fun StationKeywordsItem.toEntity(): StationKeywordsEntity {
         return StationKeywordsEntity(
             id = this.id,
             keyword = this.keyword,
             stationId = this.station_id,
-            date = Date()
+            date = Date(),
+            cleanKeyword = Utils.textNormalizer(keyword)
         )
     }
 

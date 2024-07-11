@@ -23,7 +23,7 @@ data class StationEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "name_slug") val nameSlug: String,
     @ColumnInfo(name = "region") val region: String,
-    @ColumnInfo(name = "date") var date: Date // Dodane pole do przechowywania daty
+    @ColumnInfo(name = "date") var date: Date
 )
 
 fun StationItem.toEntity(): StationEntity {
@@ -42,7 +42,7 @@ fun StationItem.toEntity(): StationEntity {
         name = this.name,
         nameSlug = this.name_slug,
         region = this.region,
-        date = Date() // Ustal datę na bieżącą datę
+        date = Date()
     )
 }
 

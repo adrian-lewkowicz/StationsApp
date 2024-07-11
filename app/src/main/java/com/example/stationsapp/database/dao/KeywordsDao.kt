@@ -14,13 +14,18 @@ interface KeywordsDao {
     @Insert
     suspend fun insertAll(keywordList: List<StationKeywordsEntity>)
 
-    @Query("SELECT * FROM station_keywords")
+    @Query("SELECT station_keywords.* FROM station_keywords " +
+            "INNER JOIN stations ON station_keywords.station_id = stations.id " +
+            "ORDER BY stations.hits DESC")
     suspend fun getAllKeywords(): List<StationKeywordsEntity>
 
     @Query("SELECT * FROM station_keywords ORDER BY date ASC LIMIT 1")
     suspend fun getOldestKeyword(): StationKeywordsEntity?
 
-    @Query("SELECT * FROM station_keywords WHERE LOWER(REPLACE(keyword, '[^\\p{ASCII}]', '')) LIKE '%' || :query || '%'")
+    @Query("SELECT station_keywords.* FROM station_keywords " +
+            "INNER JOIN stations ON station_keywords.station_id = stations.id " +
+            "WHERE station_keywords.clean_keyword LIKE '%' || LOWER(:query) || '%' " +
+            "ORDER BY stations.hits DESC")
     suspend fun searchKeywords(query: String): List<StationKeywordsEntity>
 
     @Query("DELETE from station_keywords")
