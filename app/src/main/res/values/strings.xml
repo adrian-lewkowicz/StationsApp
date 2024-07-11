@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">StationsApp</string>
     <string name="click_to_select_station">Kliknij aby wybrać stację</string>
+    <string name="distance_between_stations">Dystans pomiędzy stacjami(km):</string>
 </resources>

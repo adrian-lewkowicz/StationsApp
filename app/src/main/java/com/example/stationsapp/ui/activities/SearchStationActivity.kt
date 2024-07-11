@@ -1,5 +1,6 @@
 package com.example.stationsapp.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.SearchView
 import androidx.activity.enableEdgeToEdge
@@ -10,12 +11,17 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stationsapp.R
+import com.example.stationsapp.database.entities.StationKeywordsEntity
+import com.example.stationsapp.ui.adapters.OnItemClick
 import com.example.stationsapp.ui.adapters.StationAdapter
 import com.example.stationsapp.ui.viewmodels.SearchingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchStationActivity : AppCompatActivity() {
+    companion object{
+        const val ID_STATION_INTENT_KEY="ID_STATION_KEY"
+    }
 
     private val stationViewModel: SearchingViewModel by viewModels()
     private lateinit var stationAdapter: StationAdapter
@@ -33,7 +39,14 @@ class SearchStationActivity : AppCompatActivity() {
         val searchView = findViewById<SearchView>(R.id.searchView)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
-        stationAdapter = StationAdapter()
+        stationAdapter = StationAdapter(object: OnItemClick{
+            override fun onItemClick(keyword: StationKeywordsEntity) {
+                val returnIntent = Intent()
+                returnIntent.putExtra(ID_STATION_INTENT_KEY, keyword.stationId);
+                setResult(RESULT_OK, returnIntent)
+                finish()
+            }
+        })
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = stationAdapter
 

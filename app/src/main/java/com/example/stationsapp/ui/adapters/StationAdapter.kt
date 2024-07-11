@@ -8,13 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stationsapp.R
 import com.example.stationsapp.database.entities.StationKeywordsEntity
 
-class StationAdapter : RecyclerView.Adapter<StationAdapter.StationViewHolder>() {
+class StationAdapter(private val listener: OnItemClick) : RecyclerView.Adapter<StationAdapter.StationViewHolder>() {
+
+
 
     private var stationList = listOf<StationKeywordsEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.station_name, parent, false)
-        return StationViewHolder(view)
+        return StationViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: StationViewHolder, position: Int) {
@@ -29,8 +31,17 @@ class StationAdapter : RecyclerView.Adapter<StationAdapter.StationViewHolder>() 
         notifyDataSetChanged()
     }
 
-    class StationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class StationViewHolder(itemView: View,
+                            private val listener: OnItemClick) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.tv_stationName)
+
+        init {
+            itemView.setOnClickListener {
+                if(adapterPosition != RecyclerView.NO_POSITION){
+                    listener.onItemClick(stationList.get(adapterPosition))
+                }
+            }
+        }
 
         fun bind(station: StationKeywordsEntity) {
             nameTextView.text = station.keyword
