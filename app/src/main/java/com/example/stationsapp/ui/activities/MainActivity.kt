@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
                 if(lastClickedTV == tvStation1){
                     lifecycleScope.launch {
                         station1 = result.data?.let { mainViewModel.getStationById(it.getIntExtra(ID_STATION_INTENT_KEY, -1)) }
