@@ -19,7 +19,7 @@ data class StationKeywordsEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "keyword") val keyword: String,
     @ColumnInfo(name = "station_id", index = true) val stationId: Int,
-    @ColumnInfo(name = "date") val date: Date
+    @ColumnInfo(name = "date") var date: Date
 )
     fun StationKeywordsItem.toEntity(): StationKeywordsEntity {
         return StationKeywordsEntity(

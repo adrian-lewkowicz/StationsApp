@@ -13,4 +13,8 @@ class MainActivityViewModel
     suspend fun getStationById(stationId: Int): StationEntity {
         return repository.getStation(stationId)
     }
+
+    fun initializeData(){
+        repository.initializeData()
+    }
 }

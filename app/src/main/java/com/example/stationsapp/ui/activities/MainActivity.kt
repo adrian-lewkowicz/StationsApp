@@ -73,6 +73,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        mainViewModel.initializeData()
+
         tvStation1 = findViewById(R.id.et_station1)
         tvStation2 = findViewById(R.id.et_station2)
 
@@ -87,19 +89,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SearchStationActivity::class.java)
             startForResult.launch(intent)
         }
-
-        apiService.getStations().enqueue(object : Callback<List<StationItem>>{
-            override fun onResponse(p0: Call<List<StationItem>>, p1: Response<List<StationItem>>) {
-                Log.d("Test Koleo", p1.code().toString())
-                Log.d("Test Koleo", p1.body().toString())
-            }
-
-
-            override fun onFailure(p0: Call<List<StationItem>>, p1: Throwable) {
-                Log.e("Test Koleo", p1.toString())
-            }
-        })
     }
+
     fun calculateDistance(){
         if(station1 != null && station2!= null){
             val distance = haversine(station1!!.latitude, station1!!.longitude, station2!!.latitude, station2!!.longitude)

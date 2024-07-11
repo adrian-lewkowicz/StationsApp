@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.stationsapp.database.entities.StationKeywordsEntity
 import com.example.stationsapp.repository.StationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,8 +22,12 @@ class SearchingViewModel
     val searchResults: LiveData<List<StationKeywordsEntity>> = _searchResulsts
 
     init {
-        viewModelScope.launch {
-            val keywords = repository.getKeywords()
+        viewModelScope.launch{
+            var keywords = repository.getKeywords()
+            if(keywords.size == 0){
+                delay(2000)
+                keywords = repository.getKeywords()
+            }
             _searchResulsts.postValue(keywords)
         }
     }

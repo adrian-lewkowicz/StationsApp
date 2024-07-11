@@ -12,6 +12,7 @@ import com.example.stationsapp.database.dao.StationDao
 import com.example.stationsapp.database.entities.StationEntity
 import com.example.stationsapp.database.entities.StationKeywordsEntity
 import com.example.stationsapp.database.entities.toEntity
+import com.example.stationsapp.remote.ApiUtils
 import com.example.stationsapp.remote.KoleoApiService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -24,6 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.Date
 import javax.inject.Inject
 
 class StationRepository @Inject constructor(
@@ -31,17 +33,17 @@ class StationRepository @Inject constructor(
     private val stationDao: StationDao,
     private val keywordsDao: KeywordsDao,
     private val koleoApiService: KoleoApiService) {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    val scope = CoroutineScope(Dispatchers.IO)
 
-    init {
-        scope.launch {
+    fun initializeData() {
+        scope.launch(Dispatchers.IO) {
             val stationEntity = stationDao.getOldestStation()
             if(stationEntity != null){
                 if(Utils.checkIfIsCanBeUpdated(stationEntity.date)){
                     updateStations()
                 }
             }else{
-                loadInitialStations(context)
+                loadInitialStations()
             }
             val keywordEntity = keywordsDao.getOldestKeyword()
             if(keywordEntity != null){
@@ -49,12 +51,17 @@ class StationRepository @Inject constructor(
                     updateKeywords()
                 }
             }else{
-                loadInitialKeywords(context)
+                loadInitialKeywords()
             }
         }
     }
 
-    suspend fun getKeywords():List<StationKeywordsEntity>{
+    suspend fun getKeywords(): List<StationKeywordsEntity> {
+        keywordsDao.getOldestKeyword()?.let {
+            if (Utils.checkIfIsCanBeUpdated(it.date)) {
+                updateKeywords()
+            }
+        }
         return keywordsDao.getAllKeywords()
     }
 
@@ -62,14 +69,21 @@ class StationRepository @Inject constructor(
         return keywordsDao.searchKeywords(queryName)
     }
 
-    suspend fun getStation(stationId: Int): StationEntity{
+    suspend fun getStation(stationId: Int): StationEntity {
+        scope.launch {
+            stationDao.getOldestStation()?.let {
+                if (Utils.checkIfIsCanBeUpdated(it.date)) {
+                    updateStations()
+                }
+            }
+        }
         return stationDao.getStationById(stationId)
     }
 
     private fun updateStations(){
         koleoApiService.getStations().enqueue(object : Callback<List<StationItem>> {
             override fun onResponse(call: Call<List<StationItem>>, response: Response<List<StationItem>>) {
-                Log.d("Test Koleo", response.code().toString())
+                Log.d("Update stations", response.code().toString())
                 var remoteStations = response.body()
                 val stationEntities = remoteStations!!.map { it.toEntity() }
                 scope.launch(Dispatchers.IO) {
@@ -83,13 +97,17 @@ class StationRepository @Inject constructor(
         })
     }
 
-    private suspend fun loadInitialStations(context: Context){
+    private suspend fun loadInitialStations(){
         val resources = context.resources
         val bufferedReader = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.station_response)))
         var jsonString = bufferedReader.use { it.readText() }
         val type = object : TypeToken<List<StationItem>>() {}.type
         var listItem :List<StationItem> =  Gson().fromJson(jsonString, type)
-        stationDao.insertAll(listItem.map { it.toEntity() })
+        stationDao.insertAll(listItem.map {
+            val entity = it.toEntity()
+            entity.date = Date(ApiUtils.KOLEO_INITIAL_JSON_GET_TIME)
+            entity
+        })
     }
 
     private fun updateKeywords(){
@@ -109,12 +127,16 @@ class StationRepository @Inject constructor(
         })
     }
 
-    private suspend fun loadInitialKeywords(context: Context){
+    suspend fun loadInitialKeywords(){
         val resources = context.resources
         val bufferedReader = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.station_keywords_response)))
         var jsonString = bufferedReader.use { it.readText() }
         val type = object : TypeToken<List<StationKeywordsItem>>() {}.type
         var listItem :List<StationKeywordsItem> =  Gson().fromJson(jsonString, type)
-        keywordsDao.insertAll(listItem.map { it.toEntity() })
+        keywordsDao.insertAll(listItem.map {
+            val entity = it.toEntity()
+            entity.date = Date(ApiUtils.KOLEO_INITIAL_JSON_GET_TIME)
+            entity
+        })
     }
 }
